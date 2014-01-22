@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+<script>
+function getByClass(oParent, sClass){
+	//取到父级里所有的元素
+	var aEle = oParent.getElementsByTagName("*");
+	//选出来的结果
+	var aResult = [];
+	//判断字符串中是否有sClass的正则
+	var re = new RegExp('\\b'+sClass+'\\b');
+	for(var i = 0; i < aEle.length; i ++){
+		if(re.test(aEle[i].className)){
+			aResult.push(aEle[i]);
+		}
+	}
+	//返回选择结果
+	return aResult;
+}
+
+function getByStr(aParent, str){
+	var aChild = [];
+	for(var i = 0; i < aParent.length; i ++){
+		switch(str.charAt(0)){
+			case "#":
+				aChild.push(aParent[i].getElementById(str.substring(1)));
+				break;
+				
+			case ".":
+				var arr = getByClass(aParent[i], str.substring(1));
+				for(var j = 0; j < arr.length; j ++){
+					aChild.push(arr[j]);
+				}
+				break;
+				
+			default:
+				//li#box
+				if(/\w+#\w+/g.test(str)){
+					var aStr = str.split("#");
+					var arr = aParent[i].getElementsByTagName(aStr[0]);
+					for(var j = 0; j < arr.length; j ++){
+						if(arr[j].id == aStr[1]){
+							aChild.push(arr[j]);
+						}
+					}
+				//li.box
+				}else if(/\w+\.\w+/g.test(str)){
+					//[li, box];
+					var aStr = str.split(".");
+					//从父级中选出来所有Li
+					var arr = aParent[i].getElementsByTagName(aStr[0]);
+					//匹配class正则
+					var re = new RegExp("\\b" + aStr[1] + "\\b", "g");
+					for(var j = 0; j < arr.length; j ++){
+						//匹配成功的元素push到aChild数组里
+						if(re.test(arr[j].className)){
+							aChild.push(arr[j]);
+						}
+					}
+				//li:first	li:last	li:eq(0)	li:has(a);
+				}else if(/[a-z]+:[a-z]+(\(\w+\))?/g.test(str)){
+					var aStr = str.split(":");
+					var arr = aParent[i].getElementsByTagName(aStr[0]);
+					//如果aStr[1]是first选出第一个元素
+					switch(aStr[1].split('(')[0]){
+						case "first":
+							aChild.push(arr[0]);
+							break;
+						
+						case "last":
+							aChild.push(arr[arr.length - 1]);
+							break;
+						case "eq":
+							var n = parseInt(aStr[1].split('(')[1]);
+							aChild.push(arr[n]);
+							
+						case "has":
+							var sEle = aStr[1].split("(")[1].split(")");
+							switch(sEle[0].charAt(0)){
+								case "#":
+									var arr2 = [];
+									for(var j = 0; j < arr.length; j ++){
+										arr2.push(arr[j]);
+									}
+									for(var j = 0; j < arr2.length; j ++){
+										var arr3 = arr[j].getElementsByTagName("*");
+										for(var k = 0; k < arr3.length; k ++){
+											if(arr3[k].id == sEle[0].substring(1)){
+												aChild.push(arr[j]);
+												break;
+											}
+										}
+										
+									}
+									
+								case ".":
+									var arr2 = [];
+									for(var j = 0; j < arr.length; j ++){
+										arr2.push(arr[j]);
+									}
+									for(var j = 0; j < arr2.length; j ++){
+										var arr3 = arr[j].getElementsByTagName("*");
+										var re = new RegExp("\\b" + sEle[0].substring(1) + "\\b", "g");
+										for(var k = 0; k < arr3.length; k ++){
+											if(re.test(arr3[k].className)){
+												aChild.push(arr2[j]);
+												break;
+											}
+										}
+										
+									}
+								
+								default:
+									if(/^[a-z]+$/g.test(sEle[0])){
+										var arr2 = [];
+										for(var j = 0; j < arr.length; j ++){
+											arr2.push(arr[j]);
+										}
+										for(var j = 0; j < arr2.length; j ++){
+											var arr3 = arr[j].getElementsByTagName("*");
+											for(var k = 0; k < arr3.length; k ++){
+												if(arr3[k].tagName == sEle[0].toUpperCase()){
+													aChild.push(arr2[j]);
+													break;
+												}
+											}
+											
+										}
+									}else if(/^[a-z]+\[[a-z]+=\w+\]$/g.test(sEle[0])){
+										var arr2 = [];
+										var aStr1 = sEle[0].match(/\w+/g);
+										alert(aStr1)
+										for(var j = 0; j < arr.length; j ++){
+											arr2.push(arr[j]);
+										}
+										for(var j = 0; j < arr2.length; j ++){
+											var arr3 = arr[j].getElementsByTagName(aStr[0]);
+											for(var k = 0; k < arr3.length; k ++){
+												if(arr3[k].getAttribute(aStr[1]) == aStr[2]){
+													aChild.push(arr2[j]);
+													break;
+												}
+											}
+											
+										}
+									}
+							}
+					}
+				//input[type=button]
+				}else if(/[a-z]+\[[a-z]+=\w+\]/g.test(str)){
+					var aStr = str.match(/\w+/g);
+					var arr = aParent[i].getElementsByTagName(aStr[0]);
+					for(var j = 0; j < arr.length; j ++){
+						if(arr[j].getAttribute(aStr[1]) == aStr[2]){
+							aChild.push(arr[j]);
+						}
+					}
+				}
+				else{
+					var arr = document.getElementsByTagName(str);
+					for(var j = 0; j < arr.length; j ++){
+						aChild.push(arr[j]);
+					}
+				}
+				break;
+		}
+	}
+	return aChild;
+}
+
+function getEle(str){
+	var str = str.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ");
+	var aStr = str.split(" ");
+	
+	var aParent = [document];
+	var aChild = [];
+	
+	for(var i = 0; i < aStr.length; i ++){
+		aChild = getByStr(aParent, aStr[i]);
+		aParent = aChild;
+	}
+	return aChild;
+}
+
+window.onload = function(){
+	var aDiv = getEle("div .active");
+	//var aDiv = getByClass(document, "box");
+	for(var i = 0; i < aDiv.length; i ++){
+		aDiv[i].style.backgroundColor = "#f00";
+	}
+};
+</script>
+<body>
+
+</body>
+	<div id="div1">
+        <ul>
+        	<li class="box active"><span id="span1">fsafdasfdas</span><span id="span1"></span></li>
+        	<li class="box"></li>
+        	<li class="box active"></li>
+        	<li class="box"></li>
+            <li class="box active"></li>
+        	<li class="box"><input type="button" value="按钮" /></li>
+        </ul>
+        <input type="button" value="按钮" />
+        <input type="text" />
+    </div>
+    <div id="div2" class="div">
+        <ul>
+        	<li class="box active"></li>
+        	<li class="box"><span class="span1">fsafdasfdas</span></li>
+        	<li class="box active"></li>
+        	<li class="box"></li>
+            <li class="box active"></li>
+        	<li class="box"></li>
+        </ul>
+        <input type="button" value="按钮" />
+        <input type="text" />
+    </div>
+</html>

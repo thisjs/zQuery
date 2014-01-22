@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+<script>
+window.onload = function(){
+    var aLi = document.getElementsByTagName('li');
+    var oDiv = document.getElementById('div1');
+    var timer = null;
+    for(var i =  0; i < aLi.length; i ++){
+        aLi[i].onclick = function(){
+            clearTimeout(timer);
+            oDiv.style.display = 'block';
+            this.onmouseout = function(){
+                timer = setTimeout(function(){
+                    oDiv.style.display = 'none';
+                }, 1000)
+            };
+            this.onmouseover = function(){
+                clearTimeout(timer);
+            };
+
+            oDiv.onmouseover = function(){
+                clearTimeout(timer);
+            };
+            oDiv.onmouseout = function(){
+                timer = setTimeout(function(){
+                    oDiv.style.display = 'none';
+                }, 1000)
+            };
+
+            var sScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            var l = this.offsetLeft;
+            var r = document.documentElement.clientWidth - l - this.offsetWidth;
+            var t = this.offsetTop - sScrollTop;
+            var b = document.documentElement.clientHeight - t - this.offsetHeight;
+            if(b > t){
+                if(l > r){
+                    if(b > oDiv.offsetHeight){
+                        if(l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 > document.documentElement.clientWidth - oDiv.offsetWidth){
+                            oDiv.style.left =  document.documentElement.clientWidth - oDiv.offsetWidth + 'px';
+                        }else{
+                            oDiv.style.left = l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 + 'px';
+                        }
+                        oDiv.style.top = this.offsetTop + this.offsetHeight + 'px';
+                    }else{
+                        oDiv.style.left = l - oDiv.offsetWidth + 'px';
+                        oDiv.style.top = this.offsetTop + this.offsetHeight / 2 - oDiv.offsetHeight / 2 + 'px';
+                    }
+                }else{
+                    if(b > oDiv.offsetHeight){
+                        if(l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 < 0){
+                            oDiv.style.left = 0;
+                        }else{
+                            oDiv.style.left = l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 + 'px';
+                        }
+                        oDiv.style.top = this.offsetTop + this.offsetHeight + 'px';
+                    }else{
+                        oDiv.style.left = l + this.offsetWidth + 'px';
+                        oDiv.style.top = this.offsetTop + this.offsetHeight / 2 - oDiv.offsetHeight / 2 + 'px';
+                    }
+                }
+            }else{
+                if(l > r){
+                    if(t > oDiv.offsetHeight){
+                        if(l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 > document.documentElement.clientWidth - oDiv.offsetWidth){
+                            oDiv.style.left =  document.documentElement.clientWidth - oDiv.offsetWidth + 'px';
+                        }else{
+                            oDiv.style.left = l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 + 'px';
+                        }
+                        oDiv.style.top = this.offsetTop - oDiv.offsetHeight + 'px';
+                    }else{
+                        oDiv.style.left = l - oDiv.offsetWidth + 'px';
+                        oDiv.style.top = this.offsetTop + this.offsetHeight / 2 - oDiv.offsetHeight / 2 + 'px';
+                    }
+                }else{
+                    if(t > oDiv.offsetHeight){
+                        if(l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 < 0){
+                            oDiv.style.left = 0;
+                        }else{
+                            oDiv.style.left = l + this.offsetWidth / 2 - oDiv.offsetWidth / 2 + 'px';
+                        }
+                        oDiv.style.top = oDiv.style.top = this.offsetTop - oDiv.offsetHeight + 'px';
+                    }else{
+                        oDiv.style.left = l + this.offsetWidth + 'px';
+                        oDiv.style.top = this.offsetTop + this.offsetHeight / 2 - oDiv.offsetHeight / 2 + 'px';
+                    }
+                }
+            }
+        };
+    }
+};
+</script>
+<style>
+    *{margin: 0; padding: 0; list-style: none;}
+    ul li{width:100px; height: 100px; background: #f00; float: left; margin: 15px;}
+    #div1{width:400px; height: 200px; background: #0f0; position: absolute;}
+</style>
+</head>
+<body style="height: 1000px;">
+<div style="width:1000px; margin: 0 auto;">
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+
+    <div id="div1"></div>
+</body>
+</html>
